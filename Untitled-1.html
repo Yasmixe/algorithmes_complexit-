@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Greedy Knapsack Algorithm</title>
+    <style>
+       body {
+    font-family: Arial, sans-serif;
+    background-color: #f0f0f0;
+    margin: 0;
+    padding: 0;
+}
+
+/* Styles pour le conteneur principal */
+.container {
+    width: 80%;
+    margin: 0 auto;
+    padding: 20px;
+    background-color: #fff;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+/* Styles pour les titres */
+h1 {
+    color: #333;
+}
+
+/* Styles pour les boutons */
+button {
+    padding: 10px 20px;
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+/* Styles pour les boutons au survol */
+button:hover {
+    background-color: #0056b3;
+}
+
+/* Styles pour les éléments de liste */
+ul {
+    list-style: none;
+    padding: 0;
+}
+
+/* Styles pour les éléments de liste */
+li {
+    margin-bottom: 10px;
+}
+
+/* Styles pour les liens */
+a {
+    color: #007bff;
+    text-decoration: none;
+}
+body {
+    margin-left: 20px;
+}
+/* Styles pour les liens au survol */
+a:hover {
+    text-decoration: underline;
+}
+    </style>
+</head>
+<body>
+    <h1>L'algorithme de glouton pour le probleme de sac à dos</h1>
+    <p>Veuillez entrer les objets:</p>
+    <ul id="items">
+        <!-- Items will be dynamically added here -->
+    </ul>
+    <label for="capacity">La capacité maximale :</label>
+    <input type="number" id="capacity" placeholder="Veuillez entrer la capacité">
+    <button onclick="addNewItem()">Ajout d'objet</button>
+    <button onclick="calculateKnapsack()">Calcul du Knapsack</button>
+    <div id="result"></div>
+
+    <script>
+        const items = []; // Array to store the items
+
+        // Function to add a new item to the list
+        function addNewItem() {
+            const name = prompt("Veuillez entrer le nom de l'objet:");
+            const value = parseInt(prompt("La valeur de l'objet:"));
+            const weight = parseInt(prompt("Le poids de l'objet:"));
+            if (name && !isNaN(value) && !isNaN(weight)) {
+                items.push({ name, value, weight });
+                const itemList = document.getElementById("items");
+                const newItem = document.createElement("li");
+                newItem.textContent = `${name} (Valeur: ${value}, Poids: ${weight})`;
+                itemList.appendChild(newItem);
+            } else {
+                alert("Erreur!!. Veuillez choisir les bons attributs.");
+            }
+        }
+
+        // Greedy algorithm for the knapsack problem
+        function greedyKnapsack(items, capacity) {
+            items.sort((a, b) => b.value / b.weight - a.value / a.weight);
+
+            let totalValue = 0;
+            let totalWeight = 0;
+            const selectedItems = [];
+
+            for (const item of items) {
+                if (totalWeight + item.weight <= capacity) {
+                    selectedItems.push(item);
+                    totalValue += item.value;
+                    totalWeight += item.weight;
+                }
+            }
+
+            return {
+                selectedItems: selectedItems.map(item => item.name),
+                totalValue,
+                totalWeight
+            };
+        }
+
+        // Function to display the result on the webpage
+        function displayResult(result) {
+            const selectedItems = result.selectedItems.join(', ');
+            document.getElementById('result').innerHTML = `<p>Objets selectionnés: ${selectedItems}</p>
+                                                           <p>Total Valeur: ${result.totalValue}</p>
+                                                           <p>Total Poids: ${result.totalWeight}</p>`;
+        }
+
+        // Event handler for button click to calculate knapsack
+        function calculateKnapsack() {
+            const capacity = parseInt(document.getElementById('capacity').value);
+            if (!isNaN(capacity)) {
+                const result = greedyKnapsack(items, capacity);
+                displayResult(result);
+            } else {
+                alert("Please enter a valid capacity.");
+            }
+        }
+    </script>
+</body>
+</html>
